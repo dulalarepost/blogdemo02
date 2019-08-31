@@ -120,10 +120,8 @@ ue.addListener('ready',function(){
 });
 
 var articleId = '<%=request.getParameter("id")%>';
-var articleType = '<%=request.getParameter("type")%>';
+var type = '<%=request.getParameter("type")%>';
 function articleSubmit(){
-	var type = '<%=request.getParameter("type")%>';
-
 	var uri = '#';
 	var json = {
 		title : $("#article_title").val(),
@@ -139,7 +137,7 @@ function articleSubmit(){
 		uri = "articleUpdate";
 		json.id = articleId;
 	}
-	alert(uri+"\n"+JSON.stringify(json));
+
 	$.ajax({
 		type:'post',
 		url:uri,
@@ -191,21 +189,31 @@ function articleSubmit(){
 
 
 $(function() {
-	
-	if(articleType == "add"){
+
+	if(type == "add"){
 		$("title").html("新增博客文章");
-	}else if(articleType == "update"){
+	}else if(type == "update"){
 		$("title").html("修改博客文章");
-		// 获取文章数据 TODO
-		ue.ready(function () {
-			ue.setContent("开始修改文章了哟");
+		$.get('articleDetail?id='+articleId, function(json){
+			if(json.success){
+				var data = json.data;
+				$("#articleId").val(data.id);
+				$("#article_title").val(data.title);
+				ue.ready(function () {
+					ue.setContent(data.content);
+				});
+			}else{
+				var message = "获取文章失败："+json.message;
+				alert(message);
+			}
+
 		});
 	}
-	
+
 	$("#btn_clear").click(function(e){
 		ue.setContent('');
 	});
-	
+
 	$("#articleForm").submit(function(ev){
 		ev.preventDefault();
 		$('#articleForm').bootstrapValidator('disableSubmitButtons', false);
@@ -225,9 +233,9 @@ $(function() {
 			return;
 		}
 	});
-	
+
 	$('#articleForm').bootstrapValidator();
-	
+
 });
 </script>
 </html>
