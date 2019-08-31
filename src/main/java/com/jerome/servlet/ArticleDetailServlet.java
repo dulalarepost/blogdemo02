@@ -16,18 +16,18 @@ import java.sql.ResultSet;
 public class ArticleDetailServlet extends BaseServlet {
 
     @Override
-    public Object process(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public Object process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Article article = new Article();
         // 处理前端请求数据
-        String sid = req.getParameter("id");
+        String sid = request.getParameter("id");
         Integer id = null;
         try {
             id = Integer.parseInt(sid);
-        }catch (Exception e){
-            throw new ParameterException("id错误（"+sid+")");
+        } catch (Exception e) {
+            throw new ParameterException("id错误（" + sid + ")");
         }
 
 
@@ -38,7 +38,7 @@ public class ArticleDetailServlet extends BaseServlet {
                     "from article where id=?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
-            rs       = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 article.setId(rs.getInt("id"));
                 article.setTitle(rs.getString("title"));
@@ -46,8 +46,8 @@ public class ArticleDetailServlet extends BaseServlet {
                 article.setCreateTime(rs.getTimestamp("create_time"));
             }
             System.out.println(article);
-        }finally {
-            DBManager.close(conn,ps,rs);
+        } finally {
+            DBManager.close(conn, ps, rs);
         }
         return article;
     }
