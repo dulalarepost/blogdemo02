@@ -11,6 +11,7 @@
     <title>Title</title>
 </head>
 <body>
-Sorry!
+<h1>Sorry! 用户名或密码错误</h1>
+<%--<img src="assets/img/bg4.jpg">--%>
 </body>
 </html>
